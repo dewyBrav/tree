@@ -1,4 +1,5 @@
 #include <iostream>
+#include <initializer_list>
 
 namespace BT
 {
@@ -42,12 +43,13 @@ namespace BT
         }
         void clear();
         //
-
+        // поверхностное!
         BinaryTree(const tree_t &tree)
             : data(tree.data), left(tree.left), right(tree.right)
         {
         }
 
+        // поверхностное!
         BinaryTree &operator=(const tree_t &tree)
         {
             if (this == &tree)
@@ -59,15 +61,22 @@ namespace BT
 
             return *this;
         }
+        // std::initializer_list
+        BinaryTree(const std::initializer_list<value_type> tree_list)
+        {
+            std::cout << "Create tree with initializer_list: ";
+
+            for (const auto &value : tree_list)
+                insert(value);
+        }
 
         // const move
         // const =move
-        // const initializer_list
 
-        // overloading?? value_type
         // move/forward
+        // overloading?? value_type
         // type_traits
-        // allocator?
+        // allocator
         // delete element
 
         bool isEmpty() const;
@@ -108,7 +117,7 @@ namespace BT
     template <typename T>
     void BinaryTree<T>::clear()
     {
-        std::cout<<"Удаление дерева!\n";
+        std::cout << "Удаление дерева!\n";
         free(this);
     }
 
@@ -128,6 +137,7 @@ namespace BT
     void BinaryTree<T>::insert(value_type data)
     {
         _insert(this, data);
+        std::cout << data << " ";
     }
 
     template <typename T>
@@ -188,18 +198,21 @@ namespace BT
     template <typename T>
     void BinaryTree<T>::printPreOrder()
     {
+        std::cout << "PreOrder\t\t";
         printPrefix(this);
         std::cout << std::endl;
     }
     template <typename T>
     void BinaryTree<T>::printInOrder()
     {
+        std::cout << "InOrder\t\t\t";
         printInfix(this);
         std::cout << std::endl;
     }
     template <typename T>
     void BinaryTree<T>::printPostOrder()
     {
+        std::cout << "PostOrder\t\t";
         printPostfix(this);
         std::cout << std::endl;
     }

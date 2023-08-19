@@ -20,8 +20,10 @@ int main()
     tree = new BinaryTree(56);
     std::cout << "Is empty binary tree?: " << tree->isEmpty() << std::endl;
 
+    std::cout << "Insert: ";
     for (int i = 0; i < 10; ++i)
         tree->insert(dist(gen));
+    std::cout << std::endl;
 
     tree->printPreOrder();
     tree->printInOrder();
@@ -38,16 +40,25 @@ int main()
     //
     tree2->printPreOrder();
     std::cout << "Is compare?: " << tree2->compare_tree(tree) << std::endl;
-    printf("Insert 1 in tree2\n");
+
+    std::cout << "Insert: ";
     tree2->insert(1);
+    std::cout << std::endl;
+
     std::cout << "Is compare?: " << tree2->compare_tree(tree) << std::endl;
     // tree3
+
+    //
     std::cout << "constructor copy= tree2=tree\n";
     BinaryTree<int> *tree3;
     tree3 = tree2;
     tree3->printPreOrder();
     std::cout << "Is compare?: " << tree3->compare_tree(tree2) << std::endl;
-
+    //
+    BinaryTree<int> *tree4 = new BinaryTree{5, 67, 89, 0, 11, 56, 123, 78, 9, 0, 1, 1, 5};
+    std::cout << std::endl;
+    tree4->printPreOrder();
+    
     //
     //
     tree->clear();
