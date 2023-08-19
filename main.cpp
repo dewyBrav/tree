@@ -49,6 +49,7 @@ int main()
     std::cout << "Is compare?: " << tree3->compare_tree(tree2) << std::endl;
 
     //
+    //
     tree->clear();
 
     std::cout << "Is empty binary tree?: " << tree->isEmpty() << std::endl;
