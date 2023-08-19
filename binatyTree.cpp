@@ -108,6 +108,7 @@ namespace BT
     template <typename T>
     void BinaryTree<T>::clear()
     {
+        std::cout<<"Удаление дерева!\n";
         free(this);
     }
 
