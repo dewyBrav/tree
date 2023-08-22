@@ -1,5 +1,7 @@
 #include <iostream>
 #include <initializer_list>
+#include <string>
+#include <type_traits>
 
 namespace BT
 {
@@ -9,6 +11,7 @@ namespace BT
     public:
         using tree_t = BinaryTree;
         using value_type = T;
+        // using value_type = std::conditional_t<std::is_same_v<value_type, Widget>, Widget, T>;
 
     private:
         tree_t *left;
@@ -24,7 +27,7 @@ namespace BT
         // clearing tree
         void free(tree_t *tree);
         // insert new value
-        tree_t *_insert(tree_t *tree, value_type data);
+        tree_t *_insert(tree_t *tree, value_type &&data);
         // Compare this==other
         bool _compare_tree(const tree_t *first, const tree_t *second) const;
         // find with Pre-Order method
@@ -33,10 +36,18 @@ namespace BT
         bool findInfix(tree_t *tree, value_type data);
         // find with Post-order method
         bool findPostfix(tree_t *tree, value_type data);
+        // get max tree node
+        tree_t *getMax(tree_t *tree);
+        // get min tree node
+        tree_t *getMin(tree_t *tree);
 
     public:
-        BinaryTree() : data(nullptr), left(nullptr), right(nullptr) {}
-        explicit BinaryTree(value_type root) : data(root), left(nullptr), right(nullptr) {}
+        BinaryTree()
+            : data(nullptr), left(nullptr), right(nullptr) {}
+
+        explicit BinaryTree(value_type &&root)
+            : data(std::forward<value_type>(root)), left(nullptr), right(nullptr) {}
+
         ~BinaryTree()
         {
             free(this);
@@ -47,6 +58,7 @@ namespace BT
         BinaryTree(const tree_t &tree)
             : data(tree.data), left(tree.left), right(tree.right)
         {
+            // реализовать глубокое копирование?
         }
 
         // поверхностное!
@@ -55,19 +67,17 @@ namespace BT
             if (this == &tree)
                 return *this;
 
-            data = tree.data;
-            left = tree.left;
-            right = tree.right;
+            // реализовать глубокое копирование?
 
             return *this;
         }
-        // std::initializer_list
-        BinaryTree(const std::initializer_list<value_type> tree_list)
+        // std::initializer_list / param && ?
+        BinaryTree(std::initializer_list<value_type> tree_list)
         {
             std::cout << "Create tree with initializer_list: ";
 
-            for (const auto &value : tree_list)
-                insert(value);
+            for (auto value : tree_list)
+                insert(std::move(value));
         }
 
         // const move
@@ -78,12 +88,15 @@ namespace BT
         // type_traits
         // allocator
         // delete element
+        /* Breadth First Search*/
+
+        // get max/min
+        value_type getMin();
+        value_type getMax();
 
         bool isEmpty() const;
         //
-
-        void insert(value_type data);
-
+        void insert(value_type &&data);
         // comapare tree
         bool compare_tree(const tree_t *other) const;
         // Depth First Search
@@ -98,10 +111,40 @@ namespace BT
         bool findSymmetric(value_type fdata);
         // find Postfix method (LRN) Post-order
         bool findReverse(value_type fdata);
-
-        /* Breadth First Search*/
-        bool wfind(value_type fdata);
     };
+
+    template <typename T>
+    typename BinaryTree<T>::tree_t *BinaryTree<T>::getMin(tree_t *tree)
+    {
+        if (tree == nullptr)
+            return nullptr;
+        if (tree->left == nullptr)
+            return tree;
+
+        return getMin(tree->left);
+    }
+
+    template <typename T>
+    typename BinaryTree<T>::value_type BinaryTree<T>::getMin()
+    {
+        return getMin(this)->data;
+    }
+
+    template <typename T>
+    typename BinaryTree<T>::tree_t *BinaryTree<T>::getMax(tree_t *tree)
+    {
+        if (tree == nullptr)
+            return nullptr;
+        if (tree->right == nullptr)
+            return tree;
+
+        return getMax(tree->right);
+    }
+    template <typename T>
+    typename BinaryTree<T>::value_type BinaryTree<T>::getMax()
+    {
+        return getMax(this)->data;
+    }
 
     // clearing tree
     template <typename T>
@@ -122,22 +165,22 @@ namespace BT
     }
 
     template <typename T>
-    typename BinaryTree<T>::tree_t *BinaryTree<T>::_insert(tree_t *tree, value_type data)
+    typename BinaryTree<T>::tree_t *BinaryTree<T>::_insert(tree_t *tree, value_type &&data)
     {
         if (tree == nullptr)
-            return new tree_t(data);
+            return new tree_t(std::forward<value_type>(data));
 
-        data < tree->data ? (tree->left = _insert(tree->left, data))
-                          : (tree->right = _insert(tree->right, data));
+        data < tree->data ? (tree->left = _insert(tree->left, std::forward<value_type>(data)))
+                          : (tree->right = _insert(tree->right, std::forward<value_type>(data)));
 
         return tree;
     }
 
     template <typename T>
-    void BinaryTree<T>::insert(value_type data)
+    void BinaryTree<T>::insert(value_type &&data)
     {
-        _insert(this, data);
         std::cout << data << " ";
+        _insert(this, std::forward<value_type>(data));
     }
 
     template <typename T>
